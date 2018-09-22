@@ -4,13 +4,21 @@ declare function loadedModules lib "c:\temp\temp-VBA-Debugger\loadedModules\load
 
 sub main() ' {
 
-    dim modules() as variant
-    dim i         as integer
+    dim modules()  as variant
+    dim i          as integer
+    dim nofModules as integer
 
     modules = loadedModules
 
-    for i = 0 to uBound(loadedModules)
-        debug.print modules(i)
+  '
+  ' with the optional rank parameter of uBound, it's possible
+  ' to determine how many modules were returned. We set the
+  ' rank parameter to two to indicate the second dimension
+  '
+    nofModules = uBound(modules, 2) 
+
+    for i = 0 to nofModules
+        debug.print modules(1, i) & ": " & modules(0, i)
     next i
 
 
