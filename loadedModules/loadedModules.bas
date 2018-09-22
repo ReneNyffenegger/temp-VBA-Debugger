@@ -1,10 +1,10 @@
 option explicit
 
-declare function loadedModules lib "c:\temp\temp-VBA-Debugger\loadedModules\loadedModules.dll" () as string()
+declare function loadedModules lib "c:\temp\temp-VBA-Debugger\loadedModules\loadedModules.dll" () as variant()
 
 sub main() ' {
 
-    dim modules() as string
+    dim modules() as variant
     dim i         as integer
 
     modules = loadedModules

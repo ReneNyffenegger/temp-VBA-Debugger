@@ -20,24 +20,43 @@ __declspec(dllexport) SAFEARRAY* __stdcall loadedModules() {
 
   int nofModules = bytesNeeded/sizeof(HANDLE);
 
-  SAFEARRAYBOUND dim;
+  SAFEARRAYBOUND dimensions[2];
 
-  dim.lLbound   = 0;
-  dim.cElements = nofModules;
+  dimensions[0].lLbound = 0; dimensions[0].cElements = 2;
+  dimensions[1].lLbound = 0; dimensions[1].cElements = nofModules;
 
   SAFEARRAY *ret;
   ret = SafeArrayCreate(
-       VT_BSTR,
-       1      , // Array to be returned has one dimension …
-      &dim      // … which is described in this (dim) parameter
+       VT_VARIANT,
+       2         ,
+       dimensions
   );
 
+  VARIANT vBaseName;
+  vBaseName.vt = VT_BSTR;
+
+  VARIANT vHandle;
+  vHandle.vt = VT_I4;
+
+  LONG putIndices[2];
+
   for (LONG i=0; i<nofModules; i++) {
+
 
     wchar_t baseName[MAX_PATH];
     GetModuleBaseNameW(process, modules[i], baseName, MAX_PATH);
 
-    SafeArrayPutElement(ret, &i, SysAllocString(baseName));
+    vBaseName.bstrVal = SysAllocString(baseName);
+    vHandle.lVal      =(long) modules[i];
+
+    putIndices[0] = 0;
+    putIndices[1] = i;
+    SafeArrayPutElement(ret, putIndices, &vBaseName);
+
+    putIndices[0] = 1;
+//  putIndices[1] = 1;
+
+    SafeArrayPutElement(ret, putIndices, &vHandle);
 
   }
 
